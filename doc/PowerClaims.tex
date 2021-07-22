@@ -1,0 +1,200 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[margin=1in]{geometry}
+
+\newcommand{\half}{\tfrac{1}{2}}
+
+\title{Power Claims for fun and profit}
+\author{Wayne Nilsen}
+\date{2021}
+
+\begin{document}
+    \maketitle
+
+
+    \section{Options are bad on Ethereum and how to make things better}
+
+    There are some problems with vanilla options on Ethereum and more broadly for some market participants. The markets for options are stratified across two dimensions, strike and expiry. Markets must constantly be opened up and closed based on price movements and time movements. This fragments liquidity and makes it costly for market makers to update their offers. These problems also exist in traditional markets but to a lesser degree due to the fact that there are no gas costs.
+
+    Many people trade options to get a convex payoff function with respect to the underlying asset. This means that for a small upfront investment the investor is able to get a large gain if the price increases(decreases) for a call(put). They also have limited liability. This represents the single biggest difference between leveraged products and convex products. When you trade with leverage it is entirely possible that the asset reaches your price target in your specified timeframe but a bad candle hits your stop loss and you are forced out of your position or worse yet, liquidated. This does not happen when a trader buys a convex product like an option.
+
+
+    \section{For Traders}
+
+    \subsection{What is a power claim?}
+
+    On blockchains, there is a better way to get convexity than options that is entirely unexplored. Within DeFi an entire universe of synthetic assets was born. These are projects such as Maker, Synthetix, Mirror, etc. Generically speaking through various mechanisms these platforms provide a token whose price tracks some value provided by an oracle. It is important to understand that \textbf{the value provided by the oracle (now called an index) does not need to be the price of something}.
+
+    There is a very intriguing family of derivatives that can be created based on this observation. Consider the family of nonlinear functions $f(x) = C x^N$. When this function is applied to the price of something you can end up with something that looks like N times leveraged exposure. This is called a Power Claim.
+
+    The formula for the linear PnL of the derivative as a function of the linear PnL of the asset over a given time period is given below. Note that this is something like the payoff diagram of an option without including the premium.
+
+    \begin{equation*}
+        \text{PnL Derivative} = (\text{PnL Asset} + 1)^N - 1
+    \end{equation*}
+
+    What is remarkable about this is that this formula applies across time and price. This creates fungible convex exposure. The convexity parameter $N$ may be as high as is practical considering collateral requirements. Here is a simple table of PnL calculations, for example if the current price of the asset is 32.
+
+    % todo: include fees for reasonable values of rho
+    \begin{center}
+        \begin{tabular}{l||l|l|l|l|l|l|l|l}
+            price & $x^{-10}$ & $x^{-4}$ & $x^{-2}$ & $x^{-1}$ & $x^1$ & $x^{2}$ & $x^{4}$ & $x^{10}$ \\ \hline \hline
+            25    & 1081\%    & 168\%    & 64\%     & 28\%     & -22\% & -39\%   & -63\%   & -92\%    \\ \hline
+            26    & 698\%     & 129\%    & 51\%     & 23\%     & -19\% & -34\%   & -56\%   & -87\%    \\ \hline
+            27    & 447\%     & 97\%     & 40\%     & 19\%     & -16\% & -29\%   & -49\%   & -82\%    \\ \hline
+            28    & 280\%     & 71\%     & 31\%     & 14\%     & -13\% & -23\%   & -41\%   & -74\%    \\ \hline
+            29    & 168\%     & 48\%     & 22\%     & 10\%     & -9\%  & -18\%   & -33\%   & -63\%    \\ \hline
+            30    & 91\%      & 29\%     & 14\%     & 7\%      & -6\%  & -12\%   & -23\%   & -48\%    \\ \hline
+            31    & 37\%      & 14\%     & 7\%      & 3\%      & -3\%  & -6\%    & -12\%   & -27\%    \\ \hline
+            32    & 0\%       & 0\%      & 0\%      & 0\%      & 0\%   & 0\%     & 0\%     & 0\%      \\ \hline
+            33    & -26\%     & -12\%    & -6\%     & -3\%     & 3\%   & 6\%     & 13\%    & 36\%     \\ \hline
+            34    & -45\%     & -22\%    & -11\%    & -6\%     & 6\%   & 13\%    & 27\%    & 83\%     \\ \hline
+            35    & -59\%     & -30\%    & -16\%    & -9\%     & 9\%   & 20\%    & 43\%    & 145\%    \\ \hline
+            36    & -69\%     & -38\%    & -21\%    & -11\%    & 13\%  & 27\%    & 60\%    & 225\%    \\ \hline
+            37    & -77\%     & -44\%    & -25\%    & -14\%    & 16\%  & 34\%    & 79\%    & 327\%    \\ \hline
+            38    & -82\%     & -50\%    & -29\%    & -16\%    & 19\%  & 41\%    & 99\%    & 458\%    \\ \hline
+            39    & -86\%     & -55\%    & -33\%    & -18\%    & 22\%  & 49\%    & 121\%   & 623\%
+        \end{tabular}
+    \end{center}
+
+    These synthetic assets can provide long and short exposure with predictable time and price invariant PnL characteristics, high degrees of convexity and limited liability to the purchaser. These derivatives are relatively easy for retail traders to understand also, especially when compared to options. For practical purposes the constant $C$ can be chosen such that when trading launches on the index the initial index price is something convenient like 1,000.
+
+    \subsection{The Breakeven Price}
+
+    The breakeven price $S^\star_t$ is the price at which the trader may sell their product back to the protocol for the same price they paid.
+
+    \begin{align*}
+        S^{\star}_t = S_0 \exp \{\tfrac{1}{N} \rho t\}
+    \end{align*}
+
+    This is always interesting to traders for customizing trade expression. If $\sigma = 0.75$ and $S_0=32,000$ the table below gives the breakeven prices over time for various values of $N$.
+
+    \begin{center}
+        \begin{tabular}{l||l|l|l|l|l|l|l|l}
+            time in days & $x^{-10}$ & $x^{-4}$ & $x^{-2}$ & $x^{-1}$ & $x^{1}$  & $x^{2}$  & $x^{4}$  & $x^{10}$  \\ \hline \hline
+            14           & \$28,419  & \$30,320 & \$30,981 & \$31,317 & \$32,000 & \$32,347 & \$33,053 & \$35,263  \\ \hline
+            30           & \$24,815  & \$28,507 & \$29,856 & \$30,554 & \$32,000 & \$32,748 & \$34,298 & \$39,401  \\ \hline
+            60           & \$19,244  & \$25,395 & \$27,856 & \$29,174 & \$32,000 & \$33,514 & \$36,761 & \$48,513  \\ \hline
+            90           & \$14,923  & \$22,624 & \$25,989 & \$27,856 & \$32,000 & \$34,298 & \$39,401 & \$59,733  \\ \hline
+            180          & \$6,959   & \$15,994 & \$21,108 & \$24,248 & \$32,000 & \$36,761 & \$48,513 & \$111,500
+        \end{tabular}
+    \end{center}
+
+    One potentially interesting observation is that if you use less leverage $N$ you have more time because the premium is lower. Take for example $x^2$ at 90 days and $x^4$ at 30 days. It is exactly the same breakeven price.
+
+    \section{For Liquidity Providers}
+
+    \subsection{Fair payment for selling a power claim}
+
+    This asset fits in fairly easily to an existing options market making operation. The biggest problem here is that there is no funding mechanism built in. To address that problem, a premium must be paid to the minter. The value of the synthetic asset decays in a continuous and simple way such that the minter gains value via the index.
+
+    The previously proposed index was $f(x) = C x^N$. The problem with using this as the payoff is that it introduces arbitrage. We need to include a discount term on the index such that the market maker has the incentive to hedge. The new index is
+
+    \begin{align*}
+        f(x) &= C x^N \exp(-\rho t)\\
+        \rho &= \half \sigma^2 N (N-1) + r (N-1) - q N
+    \end{align*}
+
+    With the conventional definitions of $\sigma$, $r$ and $q$ from the Black Scholes framework. The value of $\rho$ will be set by dynamic market forces resulting in power claims having an implied volatility.
+
+    \begin{itemize}
+        \item $\sigma$ is the volatility of the asset
+        \item $r$ is the risk free rate
+        \item $q$ is the continuously compounded rate of dividends for the asset
+    \end{itemize}
+
+    Consider this table of values for typical vol rates in crypto. These are essetnially APYs paid to the protocol for minting these assets for traders.
+
+    \begin{center}
+        \begin{tabular}{l||l|l|l|l|l|l|l|l}
+            $\sigma$ & $x^{-10}$ & $x^{-4}$ & $x^{-2}$ & $x^{-1}$ & $x^{1}$ & $x^{2}$ & $x^{4}$ & $x^{10}$ \\ \hline \hline
+            50\%     & 1375\%    & 250\%    & 75\%     & 25\%     & 0\%     & 25\%    & 150\%   & 1125\%   \\ \hline
+            65\%     & 2324\%    & 423\%    & 127\%    & 42\%     & 0\%     & 42\%    & 254\%   & 1901\%   \\ \hline
+            80\%     & 3520\%    & 640\%    & 192\%    & 64\%     & 0\%     & 64\%    & 384\%   & 2880\%   \\ \hline
+            95\%     & 4964\%    & 903\%    & 271\%    & 90\%     & 0\%     & 90\%    & 542\%   & 4061\%   \\ \hline
+            110\%    & 6655\%    & 1210\%   & 363\%    & 121\%    & 0\%     & 121\%   & 726\%   & 5445\%   \\ \hline
+            125\%    & 8594\%    & 1563\%   & 469\%    & 156\%    & 0\%     & 156\%   & 938\%   & 7031\%
+        \end{tabular}
+    \end{center}
+
+    This illustrates a current problem with the system. The index rapidly approaches zero for higher leverages. It may be preferable to have these payments not be done through the index and passed as a yield from the owner of the asset to the minter.
+
+    In dollar terms, if the minter creates \$10MM of the $N=2$ token, sells it, buys back after 6 months and redeems and have the volatility at 80\% the amount paid in hedging fees to the minter is \$2.7MM. Under the same scenario with $N=4$ the hedging fees are \$8.5MM.
+
+
+    \section{For Quants}
+
+    \subsection{Motivating the choice of $\rho$ above}
+    The problem with introducing an asset with a price that tracks $f(x) = C x^N$ is that you introduce arbitrage into the market. To eliminate the arbitrage, we must adjust the drift such that $f(S_t) = E_t^\star[ f(S_T) ] $. Using black scholes gives us a starting point for the analysis in closed form. The value of $\rho$ defined above is the value that admits no arbitrage.
+
+    \subsection{Pricing and greeks}
+
+    Valuing this derivative in the Black Scholes framework and providing some greeks. See Appendix for derivation.
+
+    \begin{align*}
+        \text{Value}\quad & V = C S^N\\
+        \text{Delta}\quad & \Delta = dV/dS = C N S^{N-1}\\
+        \text{Gamma}\quad & \Gamma = d^2 V / d S^2 = C N(N-1) S^{N-2} \\
+        \text{Vega}\quad & v = dV/d\sigma =  0
+    \end{align*}
+
+    Note the very interesting characteristic that vega is 0. This means that the value of the power claim today is entirely independent of volatility. This product is pure convex long or short exposure to the underlying asset. That is only true if the market price of $\rho$ within the protocol is the specified $\rho$. When that is not the case, vega is not zero.
+
+    \section{The Protocol}
+
+    Market makers have been dominated by large firms until the advent of DeFi. DeFi allows anyone to provide liquidity and make the gains that the large market makers would have made. That is what the power claim protocol does as well.
+
+    \begin{itemize}
+        \item A pool of liquidity denominated in the base token (say ETH) is formed.
+        \item LPs deposit ETH and get LP tokens
+        \item At any time people that want to buy a power claim can buy one from the protocol at face value $CS^N$ (subject to liquidity) they receive a position NFT
+        \item When that NFT comes back, the owner of the NFT gets $CS^N \exp(-\rho t)$ for it from the pool.
+        \item At any time, subject to liquidity, the LP may withdraw and receive their proportion of assets in the pool.
+        \item The solvency of the protocol determines available liquidity, the protocol is over-collateralized.
+        \item The protocol has a global cap on the PnL and can not be insolvent.
+    \end{itemize}
+
+    \subsection{Minting}
+
+    The protocol uses a bonding curve for $\rho$ over Utilization $U$. The bonding curve is monotonically increasing in $\rho$.
+
+    Todo: fully define utilization.
+
+    The protocol also adjusts the fee paid for going long $\rho_l$ and the fee paid for going short $\rho_s$ according to what the protocol's current $\Delta$ is. This is a multiplicative factor near one. $\rho_s = \rho_l (1 - g(\Delta))$. This naturally incentivizes delta hedging within the protocol.
+
+    \begin{center}
+        \begin{tabular}{l||l|l}
+            & +delta & -delta \\ \hline \hline
+            long  & high   & low    \\ \hline
+            short & low    & high
+        \end{tabular}
+    \end{center}
+
+
+    \section{Appendix}
+
+    Proof of the present value of the derivative in the Black Scholes framework by risk neutral pricing.
+
+    Note 1 that in the BS framework, under the risk neutral measure $S_T = S_0 \exp \{ (r - q -\half\sigma^2)t + \sigma W_t \}$
+
+    Note 2 $\exp \{ N\sigma W_t \} \sim \text{Lognormal}(0, N \sigma \sqrt{t})$ with mean $\exp \{ \half N^2 \sigma^2 t \}$
+
+    \begin{align*}
+        V  &= \mathbb{E}_0^{\star} \left[ C S_T^N e^{-\rho t} e^{-rt} \right] \\
+        V e^{\rho t} &= \mathbb{E}_0^{\star} \left[ C S_T^N e^{-rt} \right] \\
+        \text{(Note 1)}\quad&= C S_0^N  \exp \{ N(r - q -\half\sigma^2)t - rt \} \mathbb{E}_0^{\star} \left[ \exp \{ N\sigma W_t \} \right] \\
+        \text{(Note 2)}\quad&= C S_0^N  \exp \{ N(r - q -\half\sigma^2)t - rt \} \exp \{ \half N^2 \sigma^2 t \} \\
+        &= C S_0^N  \exp \{(rN - qN -\half\sigma^2 N - r + \half\sigma^2 N^2) t\} \\
+        &= C S_0^N  \exp \{( \half\sigma^2 N (N-1) + r(N-1) - qN ) t\}
+    \end{align*}
+
+    Thus, $V = CS_0^N$ whenever $\rho = \half\sigma^2 N (N-1) + r(N-1) - qN$
+
+    \section{FAQ}
+
+    \textbf{Why are the tokens themselves NFTs?} Unfortunately making these leveraged tokens fungible is probably not something that is realistic. The index price will continuously decrease and eventually run out of precision within just a few months to years. Thus, the protocol creates non-fungible leverage tokens that track their fees separately on their own index. Thankfully the LP tokens are still fungible.
+\end{document}

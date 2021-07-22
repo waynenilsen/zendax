@@ -1,0 +1,14 @@
+{
+  "name": "power-claim",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "npx jest"
+  },
+  "author": "",
+  "license": "MIT"
+}
