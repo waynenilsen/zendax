@@ -1,0 +1,56 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[margin=1in]{geometry}
+
+\newcommand{\half}{\tfrac{1}{2}}
+
+\title{Trig Tokens for fun and profit}
+\author{Wayne Nilsen}
+\date{2021}
+
+\begin{document}
+    \maketitle
+
+
+    \section{Options are bad on Ethereum and how to make things better}
+
+    There are some problems with vanilla options on Ethereum and more broadly for some market participants. The markets for options are stratified across two dimensions, strike and expiry. Markets must constantly be opened up and closed based on price movements and time movements. This fragments liquidity and makes it costly for market makers to update their offers. These problems also exist in traditional markets but to a lesser degree due to the fact that there are no gas costs.
+
+    Many people trade options to get a convex payoff function with respect to the underlying asset. This means that for a small upfront investment the investor is able to get a large gain if the price increases(decreases) for a call(put). They also have limited liability. This represents the single biggest difference between leveraged products and convex products. When you trade with leverage it is entirely possible that the asset reaches your price target in your specified timeframe but a bad candle hits your stop loss and you are forced out of your position or worse yet, liquidated. This does not happen when a trader buys a convex product like an option.
+
+
+    \section{For Traders}
+
+    \subsection{What is a trig token?}
+
+    Consider the trig token with max payout parameter 2x. In that case
+
+    \section{Trig Tokens}
+
+    \begin{align*}
+        x &= x \sin^2(f(x)) + x \cos^2(f(x)) \\
+        f(x) &= \frac{\pi}{2}\ln_2\left(\frac{x}{S_0}\right) + \sin^{-1}\left(\frac{1}{\sqrt{2}} \right) \\
+        2^N S_0 \sin^2(f(2^N S_0)) &= 2^{N-1} S_0 \quad \forall n \in \mathbb{Z} \\
+        2^N S_0 \cos^2(f(2^N S_0)) &= 2^{N-1} S_0 \quad \forall n \in \mathbb{Z}
+    \end{align*}
+
+    A minter mints synthetic tokens against the protocol by providing one underlying token. Say, ETH. The minter receives 1 Sin token and one Cos token. If the minter wishes to redeem they may do so simply by bringing back 1 Sin token and 1 Cos token. This protocol does not require any maintenence fees.
+
+    Every doubling and halvening results in another meeting of the synthetic tokens at equal value, half of the underlying value. The synthetic tokens start at equal value. This protocol has no overcollateralization and is mathematically impossible to be undercollateralized while at the same time providing leveraged short and long exposure.
+
+    New tokens may be issued for various values of $S_0$ depending on price action. The convexity may also be modified by changing the base of the log.
+
+    \subsection{Arbitrage}
+
+    The price of these tokens will be what they should be due to no arbitrage. There is a clear arbitrage for when the pair of sin and cos are as a sum not worth the underlying provided by the mint/redeem mechanism of the protocol. The more interesting argument is why sin and cos tokens are worth their mathematical formula. The protocol has another built in mint/redeem mechanism. Based on the formula the protocol will Mint 1 sin in exchange for 1
+    \begin{itemize}
+        \item You Bring 1 Underlying You receive 1 Sin and 1 Cos
+        \item You Bring 1 Sin and 1 Cos You receive 1 Underlying
+        \item You Bring 1 Cos You receive face value in Underlying
+        \item You Bring 1 Sin You receive face value in Underlying
+    \end{itemize}
+\end{document}
