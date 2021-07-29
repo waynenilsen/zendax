@@ -41,9 +41,9 @@ test2 $$x=2$$
 
 test3
 
-\\[
+$$
 \begin{align*}
 f(x) &= C x^N \exp(-\rho t)\\
 \rho &= \half \sigma^2 N (N-1) + r (N-1) - q N
 \end{align*}
-\\]
+$$
