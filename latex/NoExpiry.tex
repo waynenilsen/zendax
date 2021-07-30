@@ -1,0 +1,49 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[margin=1in]{geometry}
+
+\newcommand{\half}{\tfrac{1}{2}}
+
+\title{Derivatives with no expiries}
+\author{Wayne Nilsen}
+\date{2021}
+
+\begin{document}
+    \maketitle
+
+    \section{This section may be entirely pointless}
+
+    Originally I wanted this section to show how you can get a payoff today by multiplying by a constant factor that is deeply related to the payoff in the future. That is naturally entirely possible although probably useless in the end.
+
+    The biggest problem that we face with expiries is that it forces LPs and traders alike to fragment liquidity and attention span. Traditionally there is some payoff function $f(x)$ that gives the payoff of a derivative corresponding to some maturity time. That contract is valued at some current time and traded. Turning this problem on its head, rather than proposing a derivative whose terminal value is $f(x)$ we want a derivative with a current value of $f(x)$ and ask how much we would have to pay over time to obtain that exposure.
+
+    Jensen's inequality gives a hint of how to accomplish this. To state it plainly, Jensen's inequality states that when $f$ is convex, $X$ is a random variable and $E$ is the expected value
+
+    $$f(E[X]) \leq E[f(X)]$$
+
+    If we take this one step further and consider $f$ to be what we want the current value function of our derivative and consider $X$ to be the discounted price of the underlying. To simplify expressions for the time being we will assume that dividends and the risk free rate are zero, $r=q=0$. Because the discounted price of the underlying is a martingale under the risk neutral measure, $f(E_0^\star\left[S_t\right]) = S_0$
+
+    \begin{align*}
+        \mathcal{J} &\equiv  \frac{f\left( E_0^\star\left[S_t\right])\right)}{E_0^\star\left[ f(S_t)\right])} \\
+        & = \frac{f\left( S_0 \right)}{E_0^\star\left[ f(S_t)\right])} \quad \text{(martingale)}
+    \end{align*)}
+
+    Note we drop the $E_0^\star$ and just go with $E$ from now for readability and without loss of generality. If there is a need to specify a filtration other than $\mathcal{F}_0$ it will be specified with a subscript and if there is a need to specify a measure other than the risk neutral measure it will be specified with a superscript and most likely noted.
+
+    If the payoff function for a new derivative is $g(x) = f(x)\mathcal{J}(x)$ then the price is
+
+    \begin{align*}
+        E[g(S_t)] &= E[f(S_t) \mathcal{J}(S_t)] \\
+        &= E[f(S_t) f(S_0) / E[f(S_t)]] \\
+        &= f(S_0) E[f(S_t) / E[f(S_t)]] \\
+        &= f(S_0) E[f(S_t)] / E[f(S_t)] \\
+        &= f(S_0)
+    \end{align*}
+
+
+
+\end{document}
