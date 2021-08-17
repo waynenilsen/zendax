@@ -9,11 +9,12 @@
 \newcommand{\half}{\tfrac{1}{2}}
 
 \title{Power Claims for fun and profit}
-\author{Wayne Nilsen}
+\author{Wayne Nilsen (@waynenilsen)}
 \date{2021}
 
 \begin{document}
     \maketitle
+    A note to the reader: These are some occasionally incomplete and rambling thoughts that I jotted down some time ago. I want to thank Dan and Dave from Paradigm for looking over the work. I shared an early version of this work with them and it turned out that they were already thinking about this idea as well. If anyone wants to discuss this work my twitter DMs are open.
 
     \section{For Traders}
 
@@ -82,7 +83,7 @@
 
     \subsection{Fair payment for selling a power claim}
 
-    This asset fits in fairly easily to an existing options market making operation. The biggest problem here is that there is no funding mechanism built in. To address that problem, a premium must be paid to the minter. The value of the synthetic asset decays in a continuous and simple way such that the minter gains value via the index.
+    This asset fits in fairly easily to an existing options market making operation. The biggest problem here is that there is no funding mechanism built in. To address that problem, a premium must be paid to the minter. An external funding rate is paid continuously.
 
     The previously proposed index was $f(x) = C x^N$. The problem with using this as the payoff is that it introduces arbitrage. We need to include a discount term on the index such that the market maker has the incentive to hedge. The new index is
 
@@ -113,8 +114,6 @@
         \end{tabular}
     \end{center}
 
-    This illustrates a current problem with the system. The index rapidly approaches zero for higher leverages. It may be preferable to have these payments not be done through the index and passed as a yield from the owner of the asset to the minter.
-
     In dollar terms, if the minter creates \$10MM of the $N=2$ token, sells it, buys back after 6 months and redeems and have the volatility at 80\% the amount paid in hedging fees to the minter is \$2.7MM. Under the same scenario with $N=4$ the hedging fees are \$8.5MM.
 
 
@@ -134,7 +133,7 @@
         \text{Vega}\quad & v = dV/d\sigma =  0
     \end{align*}
 
-    Note the very interesting characteristic that vega is 0. This means that the value of the power claim today is entirely independent of volatility. This product is pure convex long or short exposure to the underlying asset. That is only true if the market price of $\rho$ within the protocol is the specified $\rho$. When that is not the case, vega is not zero.
+    Note that vega \emph{of the price of the power claim} is zero here because the current price was engineered to be exactly $S^N$. In practice exposure to $\sigma$ comes via the funding rate.
 
     \section{The Protocol}
 
